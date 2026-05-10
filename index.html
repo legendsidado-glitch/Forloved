@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForLoved | Luxury & Romance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --magenta: #ff00ff;
+            --rose: #fb7185;
+            --deep-purple: #300130;
+            --violet: #8b5cf6;
+            --gold: #f59e0b;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1a001a 0%, #000000 100%);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            cursor: none;
+        }
+
+        h1, h2, h3, .luxury-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-in-out, visibility 1s;
+        }
+
+        .loader-logo {
+            width: 150px;
+            height: 150px;
+            filter: drop-shadow(0 0 20px var(--magenta));
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .progress-container {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--magenta), var(--violet));
+            transition: width 0.3s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 10px; }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-dark {
+            background: rgba(15, 0, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 0, 255, 0.1);
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 1s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .floating { animation: floating 3s infinite ease-in-out; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.6;
+        }
+
+        /* Cursor Glow */
+        #cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--magenta);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px var(--magenta);
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        /* Design Section Specifics */
+        .gift-canvas {
+            min-height: 400px;
+            background: radial-gradient(circle at center, #2a002a 0%, #000 100%);
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .item-3d {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        }
+
+        .item-3d:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 20px var(--magenta));
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-text { display: none; }
+            .section-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-logo flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-full h-full text-rose-500">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor" fill-opacity="0.2"/>
+            </svg>
+        </div>
+        <h2 class="text-white mt-8 tracking-[0.5em] text-sm uppercase opacity-50">FOR LOVED</h2>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-xs mt-4 text-rose-400 font-mono">0%</p>
+    </div>
+
+    <div id="cursor-glow"></div>
+
+    <!-- Background Particles Layer -->
+    <div id="particle-container"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-[100] transition-all duration-500 py-6 px-10">
+        <div class="max-w-7xl mx-auto flex items-center justify-between glass py-3 px-8 rounded-full">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="switchSection('home')">
+                <div class="w-10 h-10 text-magenta">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-rose-500 drop-shadow-[0_0_8px_rgba(255,0,255,0.5)]">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+                <span class="text-2xl font-bold tracking-tighter luxury-font bg-gradient-to-r from-rose-400 to-magenta bg-clip-text text-transparent">ForLoved</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <button onclick="switchSection('home')" class="nav-link relative text-sm font-medium uppercase tracking-widest text-white/70 hover:text-white transition-colors">Home</button>
+                <button onclick="switchSection('design')" class="nav-link relative text-sm font-medium uppercase tracking-widest text-white/70 hover:text-white transition-colors">Design</button>
+                <button onclick="switchSection('chat')" class="nav-link relative text-sm font-medium uppercase tracking-widest text-white/70 hover:text-white transition-colors">Chat</button>
+                <button onclick="switchSection('passes')" class="nav-link relative text-sm font-medium uppercase tracking-widest text-white/70 hover:text-white transition-colors">Passes</button>
+                <button onclick="switchSection('settings')" class="nav-link relative text-sm font-medium uppercase tracking-widest text-white/70 hover:text-white transition-colors">Settings</button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="p-2 hover:text-magenta transition-colors"><i data-lucide="bell" class="w-5 h-5"></i></button>
+                <button id="music-toggle" class="p-2 hover:text-rose-400 transition-colors"><i data-lucide="music" class="w-5 h-5"></i></button>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-magenta to-violet p-[2px]">
+                    <div class="w-full h-full bg-black rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Sections -->
+    <main class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+        
+        <!-- Home Section -->
+        <section id="section-home" class="active-section flex flex-col items-center justify-center text-center py-20">
+            <h1 class="text-6xl md:text-8xl font-bold mb-6 luxury-font leading-tight">
+                Crafting <span class="bg-gradient-to-r from-rose-500 to-magenta bg-clip-text text-transparent italic">Everlasting</span> Emotions
+            </h1>
+            <p class="max-w-2xl text-lg text-white/60 mb-10 tracking-wide font-light">
+                The world's most exclusive platform for personal, luxurious, and romantic gift design. Experience the art of gifting through our futuristic real-time creation suite.
+            </p>
+            <div class="flex gap-6">
+                <button onclick="switchSection('design')" class="px-10 py-4 bg-gradient-to-r from-magenta to-violet rounded-full font-bold uppercase tracking-widest hover:shadow-[0_0_30px_rgba(255,0,255,0.4)] transform hover:scale-105 transition-all">Start Designing</button>
+                <button class="px-10 py-4 glass rounded-full font-bold uppercase tracking-widest hover:bg-white/10 transition-all border border-white/20">Explore Gallery</button>
+            </div>
+            
+            <div class="mt-32 grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
+                <div class="glass p-8 rounded-3xl text-left transform hover:-translate-y-2 transition-all">
+                    <div class="w-12 h-12 bg-magenta/20 rounded-2xl flex items-center justify-center mb-6 text-magenta">
+                        <i data-lucide="gem" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Premium Materials</h3>
+                    <p class="text-white/50">Only the finest roses, gold, and silks are used in our signature luxury collections.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl text-left transform hover:-translate-y-2 transition-all">
+                    <div class="w-12 h-12 bg-violet/20 rounded-2xl flex items-center justify-center mb-6 text-violet">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Digital Keepsakes</h3>
+                    <p class="text-white/50">Every physical gift comes with a stunning 3D digital twin and interactive message.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl text-left transform hover:-translate-y-2 transition-all">
+                    <div class="w-12 h-12 bg-rose-500/20 rounded-2xl flex items-center justify-center mb-6 text-rose-500">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Secured Love</h3>
+                    <p class="text-white/50">Privacy first. Your messages and photos are encrypted for your recipient only.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Section -->
+        <section id="section-design" class="hidden py-10">
+            <div class="flex flex-col md:flex-row gap-10">
+                <!-- Sidebar Controls -->
+                <div class="w-full md:w-80 space-y-6">
+                    <div class="glass p-6 rounded-3xl">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="layout" class="w-5 h-5 text-magenta"></i> Category</h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setDesignType('flowers')" id="btn-type-flowers" class="p-3 rounded-xl border border-magenta bg-magenta/10 text-xs font-bold uppercase tracking-tighter">Luxury Flowers</button>
+                            <button onclick="setDesignType('box')" id="btn-type-box" class="p-3 rounded-xl border border-white/10 hover:border-magenta/50 transition-all text-xs font-bold uppercase tracking-tighter">Gift Box</button>
+                        </div>
+                    </div>
+
+                    <div id="controls-flowers" class="glass p-6 rounded-3xl space-y-6">
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Flower Type</label>
+                            <select id="flower-type" onchange="updateDesignPreview()" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 focus:outline-none focus:border-magenta">
+                                <option>Eternal Roses</option>
+                                <option>Graceful Tulips</option>
+                                <option>Majestic Lilies</option>
+                                <option>Royal Orchids</option>
+                                <option>Sunflowers</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Primary Color</label>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="setDesignColor('#ff0055')" class="w-8 h-8 rounded-full border-2 border-white/20 bg-[#ff0055]"></button>
+                                <button onclick="setDesignColor('#ffffff')" class="w-8 h-8 rounded-full border-2 border-white/20 bg-white"></button>
+                                <button onclick="setDesignColor('#111111')" class="w-8 h-8 rounded-full border-2 border-white/20 bg-black"></button>
+                                <button onclick="setDesignColor('#8b5cf6')" class="w-8 h-8 rounded-full border-2 border-white/20 bg-violet-500"></button>
+                                <button onclick="setDesignColor('#f59e0b')" class="w-8 h-8 rounded-full border-2 border-white/20 bg-amber-500"></button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Amount</label>
+                            <input type="range" min="1" max="100" value="12" class="w-full accent-magenta" oninput="updateDesignPreview()">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Message</label>
+                            <textarea placeholder="Write your letter..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 h-24 focus:outline-none focus:border-magenta text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <div id="controls-box" class="hidden glass p-6 rounded-3xl space-y-6">
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Box Material</label>
+                            <select class="w-full bg-black/40 border border-white/10 rounded-xl p-3 focus:outline-none focus:border-magenta">
+                                <option>Premium Velvet</option>
+                                <option>Handcrafted Wood</option>
+                                <option>Minimalist Matte</option>
+                                <option>Gold Plated</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-white/40 mb-3 block">Include Items</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 glass p-2 rounded-lg cursor-pointer hover:bg-white/5 transition-all">
+                                    <input type="checkbox" class="accent-magenta"> <span>Diamond Ring</span>
+                                </label>
+                                <label class="flex items-center gap-3 glass p-2 rounded-lg cursor-pointer hover:bg-white/5 transition-all">
+                                    <input type="checkbox" class="accent-magenta"> <span>Luxury Perfume</span>
+                                </label>
+                                <label class="flex items-center gap-3 glass p-2 rounded-lg cursor-pointer hover:bg-white/5 transition-all">
+                                    <input type="checkbox" class="accent-magenta"> <span>Personal Card</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview Canvas -->
+                <div class="flex-1 flex flex-col gap-6">
+                    <div class="gift-canvas flex-col relative group">
+                        <div id="preview-render" class="relative z-10 w-full h-full flex items-center justify-center">
+                            <div id="flower-render" class="item-3d flex items-center justify-center">
+                                <!-- Dynamic SVG generated via JS -->
+                                <svg viewBox="0 0 200 200" class="w-64 h-64 drop-shadow-[0_0_30px_rgba(255,0,255,0.3)]">
+                                    <path id="preview-path" d="M100 180c-20-30-60-40-60-90 0-30 20-50 50-50 5 0 10 1 10 1s5-1 10-1c30 0 50 20 50 50 0 50-40 60-60 90z" fill="#ff0055" />
+                                    <circle cx="100" cy="80" r="15" fill="rgba(255,255,255,0.2)" />
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Labels -->
+                        <div class="absolute bottom-8 left-8 glass px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live 3D Preview
+                        </div>
+                        <div class="absolute top-8 right-8 flex gap-2">
+                            <button class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-magenta transition-all"><i data-lucide="rotate-cw" class="w-4 h-4"></i></button>
+                            <button class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-magenta transition-all"><i data-lucide="maximize" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="glass p-8 rounded-3xl flex items-center justify-between">
+                        <div>
+                            <p class="text-white/40 text-sm mb-1 uppercase tracking-widest">Current Estimate</p>
+                            <p class="text-3xl font-bold luxury-font">$129.00 <span class="text-xs font-sans text-white/30 font-normal">USD</span></p>
+                        </div>
+                        <button class="px-10 py-4 bg-white text-black font-bold rounded-full uppercase tracking-widest hover:bg-magenta hover:text-white transition-all">Add to Bag</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="section-chat" class="hidden h-[70vh] flex flex-col glass rounded-3xl overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-500 to-magenta p-[2px]">
+                        <div class="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Public Sanctuary</h3>
+                        <p class="text-xs text-green-500 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> 1,204 Lovers Online</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <button class="w-10 h-10 glass rounded-full flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="search" class="w-4 h-4"></i></button>
+                    <button class="w-10 h-10 glass rounded-full flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="flex gap-4 max-w-[80%]">
+                    <div class="w-10 h-10 rounded-full bg-white/10 shrink-0"></div>
+                    <div class="glass p-4 rounded-2xl rounded-tl-none">
+                        <p class="text-xs text-magenta font-bold mb-1">EternalSoul_99</p>
+                        <p class="text-sm text-white/80">The new rose design is absolutely stunning. Can't wait for my partner to see it! ❤️</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 max-w-[80%] ml-auto flex-row-reverse">
+                    <div class="w-10 h-10 rounded-full bg-magenta/20 shrink-0"></div>
+                    <div class="bg-magenta/20 backdrop-blur-md p-4 rounded-2xl rounded-tr-none border border-magenta/30">
+                        <p class="text-xs text-white/60 font-bold mb-1 text-right">You</p>
+                        <p class="text-sm">Just ordered the Gold Chain membership! The 3D effects are insane.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-white/10 flex gap-4">
+                <button class="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                <input type="text" placeholder="Whisper your heart..." class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 focus:outline-none focus:border-magenta transition-all">
+                <button class="w-12 h-12 bg-magenta rounded-2xl flex items-center justify-center hover:shadow-[0_0_20px_rgba(255,0,255,0.4)] transition-all">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Passes Section -->
+        <section id="section-passes" class="hidden">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 luxury-font">Exclusive Tiers</h2>
+                <p class="text-white/40">Elevate your romantic expression with our membership passes.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Standard -->
+                <div class="glass p-10 rounded-[3rem] border border-white/5 relative overflow-hidden group">
+                    <h3 class="text-2xl font-bold mb-2">Standard</h3>
+                    <p class="text-4xl font-bold luxury-font mb-6">$0 <span class="text-sm font-sans font-light text-white/40">Free Forever</span></p>
+                    <ul class="space-y-4 text-white/60 text-sm mb-10">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-magenta"></i> Basic Flower Design</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-magenta"></i> Standard Boxes</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-magenta"></i> Public Chat Access</li>
+                    </ul>
+                    <button class="w-full py-4 glass rounded-2xl font-bold tracking-widest opacity-50 cursor-not-allowed">Current Plan</button>
+                </div>
+
+                <!-- Lovebird -->
+                <div class="glass p-10 rounded-[3rem] border-2 border-magenta/40 relative overflow-hidden transform hover:-translate-y-2 transition-all">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="bg-magenta text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Popular</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Lovebird</h3>
+                    <p class="text-4xl font-bold luxury-font mb-2">$5.99 <span class="text-sm font-sans font-light text-white/40">/month</span></p>
+                    <p class="text-xs text-rose-400 mb-6 font-bold uppercase tracking-tighter">or $25.00 Lifetime</p>
+                    <ul class="space-y-4 text-white/80 text-sm mb-10">
+                        <li class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i> Premium Flower Types</li>
+                        <li class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i> Animated 3D Letters</li>
+                        <li class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i> Exclusive Ribbon Styles</li>
+                        <li class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i> Custom Chat Badges</li>
+                    </ul>
+                    <button class="w-full py-4 bg-gradient-to-r from-rose-500 to-magenta rounded-2xl font-bold tracking-widest shadow-[0_10px_30px_rgba(255,0,255,0.2)]">Upgrade Now</button>
+                </div>
+
+                <!-- Golden Chain -->
+                <div class="glass p-10 rounded-[3rem] border-2 border-amber-500/30 relative overflow-hidden transform hover:-translate-y-2 transition-all bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.1),transparent)]">
+                    <h3 class="text-2xl font-bold mb-2 text-amber-500">Golden Chain</h3>
+                    <p class="text-4xl font-bold luxury-font mb-2">$19.99 <span class="text-sm font-sans font-light text-white/40">/month</span></p>
+                    <p class="text-xs text-amber-500 mb-6 font-bold uppercase tracking-tighter">or $100.00 Lifetime</p>
+                    <ul class="space-y-4 text-white/80 text-sm mb-10">
+                        <li class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Ultra-Rare 24k Gold Flowers</li>
+                        <li class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Diamond Encrusted Items</li>
+                        <li class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-500"></i> VIP Customization Engine</li>
+                        <li class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Priority Concierge Support</li>
+                    </ul>
+                    <button class="w-full py-4 bg-amber-500 text-black font-bold rounded-2xl tracking-widest shadow-[0_10px_30px_rgba(245,158,11,0.2)]">Go Golden</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="section-settings" class="hidden max-w-2xl mx-auto">
+            <div class="glass p-10 rounded-[3rem] space-y-10">
+                <h2 class="text-3xl font-bold luxury-font">System Preferences</h2>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold">Atmospheric Particles</h4>
+                            <p class="text-xs text-white/40">Toggle rose petals and heart effects</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="particle-toggle" class="sr-only peer" checked onchange="toggleParticles()">
+                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-magenta"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold">Music Experience</h4>
+                            <p class="text-xs text-white/40">Enable background romantic ambience</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-magenta"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold">High Performance Mode</h4>
+                            <p class="text-xs text-white/40">Optimize UI for slower devices</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-magenta"></div>
+                        </label>
+                    </div>
+
+                    <div class="pt-6 border-t border-white/10">
+                        <h4 class="font-bold mb-4">Cookie Data</h4>
+                        <div class="flex gap-4">
+                            <button onclick="clearPreferences()" class="flex-1 py-3 border border-white/10 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5">Clear Cookies</button>
+                            <button onclick="savePreferences()" class="flex-1 py-3 bg-magenta/20 border border-magenta/40 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-magenta/40">Save State</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-16 px-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="heart" class="w-6 h-6 text-magenta"></i>
+                    <span class="text-2xl font-bold tracking-tighter luxury-font">ForLoved</span>
+                </div>
+                <p class="text-white/40 max-w-sm mb-6">Redefining luxury romance for the digital age. Created for those who believe that gifting is an art form.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:text-magenta transition-all"><i data-lucide="github" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Platform</h4>
+                <ul class="space-y-4 text-white/50 text-sm">
+                    <li><a href="#" class="hover:text-white transition-all">Gift Tracker</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">Privacy Vault</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">Designer API</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">Partner Program</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6">Support</h4>
+                <ul class="space-y-4 text-white/50 text-sm">
+                    <li><a href="#" class="hover:text-white transition-all">Help Center</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">Terms of Love</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-white/30">&copy; 2024 ForLoved Collective. All rights reserved.</p>
+            <div class="flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+                <span>Luxury</span>
+                <span>Emotional</span>
+                <span>Private</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Core State
+        const state = {
+            currentSection: 'home',
+            design: {
+                type: 'flowers',
+                color: '#ff0055',
+                flowerType: 'Eternal Roses',
+                particlesEnabled: true
+            },
+            preferences: {}
+        };
+
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // Loading Screen Logic
+        window.onload = () => {
+            let progress = 0;
+            const bar = document.getElementById('progress-bar');
+            const text = document.getElementById('progress-text');
+            const loader = document.getElementById('loader');
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        loader.style.visibility = 'hidden';
+                        document.body.style.overflow = 'auto';
+                    }, 500);
+                }
+                bar.style.width = progress + '%';
+                text.innerText = Math.floor(progress) + '%';
+            }, 100);
+
+            createInitialParticles();
+            loadPreferences();
+        };
+
+        // Section Switching
+        function switchSection(sectionId) {
+            document.querySelectorAll('main > section').forEach(sec => {
+                sec.classList.add('hidden');
+                sec.classList.remove('fade-in');
+            });
+            const target = document.getElementById('section-' + sectionId);
+            target.classList.remove('hidden');
+            target.classList.add('fade-in');
+            
+            // UI Updates
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            state.currentSection = sectionId;
+        }
+
+        // Design System Logic
+        function setDesignType(type) {
+            state.design.type = type;
+            document.getElementById('controls-flowers').classList.toggle('hidden', type !== 'flowers');
+            document.getElementById('controls-box').classList.toggle('hidden', type !== 'box');
+            
+            document.getElementById('btn-type-flowers').className = type === 'flowers' 
+                ? "p-3 rounded-xl border border-magenta bg-magenta/10 text-xs font-bold uppercase tracking-tighter"
+                : "p-3 rounded-xl border border-white/10 hover:border-magenta/50 transition-all text-xs font-bold uppercase tracking-tighter";
+            
+            document.getElementById('btn-type-box').className = type === 'box'
+                ? "p-3 rounded-xl border border-magenta bg-magenta/10 text-xs font-bold uppercase tracking-tighter"
+                : "p-3 rounded-xl border border-white/10 hover:border-magenta/50 transition-all text-xs font-bold uppercase tracking-tighter";
+        }
+
+        function setDesignColor(color) {
+            state.design.color = color;
+            updateDesignPreview();
+        }
+
+        function updateDesignPreview() {
+            const previewPath = document.getElementById('preview-path');
+            const flowerType = document.getElementById('flower-type').value;
+            
+            previewPath.style.fill = state.design.color;
+            
+            // Mock transformation for different types
+            if (flowerType === 'Majestic Lilies') {
+                previewPath.setAttribute('d', 'M100 180c-40-50-80-60-80-110 0-40 30-60 60-60s20 20 20 20 20-20 20-20 60 20 60 60c0 50-40 60-80 110z');
+            } else {
+                previewPath.setAttribute('d', 'M100 180c-20-30-60-40-60-90 0-30 20-50 50-50 5 0 10 1 10 1s5-1 10-1c30 0 50 20 50 50 0 50-40 60-60 90z');
+            }
+        }
+
+        // Particle System
+        function createInitialParticles() {
+            const container = document.getElementById('particle-container');
+            for (let i = 0; i < 20; i++) {
+                spawnParticle();
+            }
+        }
+
+        function spawnParticle() {
+            if (!state.design.particlesEnabled) return;
+            
+            const container = document.getElementById('particle-container');
+            const p = document.createElement('div');
+            const size = Math.random() * 15 + 10;
+            const duration = Math.random() * 10 + 10;
+            const left = Math.random() * 100;
+            
+            p.className = 'particle';
+            p.innerHTML = `<svg viewBox="0 0 24 24" fill="${Math.random() > 0.5 ? '#ff00ff' : '#fb7185'}" style="width: ${size}px; height: ${size}px; filter: blur(1px); opacity: ${Math.random() * 0.4}">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>`;
+            
+            p.style.left = left + '%';
+            p.style.top = '-20px';
+            p.style.animation = `fall ${duration}s linear infinite`;
+            
+            container.appendChild(p);
+
+            // Clean up
+            setTimeout(() => p.remove(), duration * 1000);
+        }
+
+        setInterval(spawnParticle, 2000);
+
+        // Particle Animation Style
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fall {
+                0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+                10% { opacity: 0.6; }
+                90% { opacity: 0.6; }
+                100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Cursor Glow Follow
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('cursor-glow');
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Cookie/Preference Logic
+        function savePreferences() {
+            const prefs = {
+                particles: document.getElementById('particle-toggle').checked,
+                theme: 'luxury-dark'
+            };
+            localStorage.setItem('forloved_prefs', JSON.stringify(prefs));
+            
+            // Custom notification instead of alert
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-10 right-10 glass px-6 py-4 rounded-2xl z-[200] fade-in border-magenta border';
+            toast.innerText = 'Preferences Enchanted Successfully ✨';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function loadPreferences() {
+            const saved = localStorage.getItem('forloved_prefs');
+            if (saved) {
+                const prefs = JSON.parse(saved);
+                document.getElementById('particle-toggle').checked = prefs.particles;
+                state.design.particlesEnabled = prefs.particles;
+            }
+        }
+
+        function clearPreferences() {
+            localStorage.removeItem('forloved_prefs');
+            location.reload();
+        }
+
+        function toggleParticles() {
+            state.design.particlesEnabled = document.getElementById('particle-toggle').checked;
+            if (!state.design.particlesEnabled) {
+                document.getElementById('particle-container').innerHTML = '';
+            }
+        }
+
+        // Navbar Scroll Effect
+        window.onscroll = () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-6');
+            } else {
+                nav.classList.add('py-6');
+                nav.classList.remove('py-4');
+            }
+        };
+
+    </script>
+</body>
+</html>
